@@ -1,0 +1,3 @@
+# AI Fundamentals Project
+
+# No external packages required.
