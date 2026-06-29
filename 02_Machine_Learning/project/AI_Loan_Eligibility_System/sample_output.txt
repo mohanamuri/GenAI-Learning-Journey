@@ -1,0 +1,42 @@
+============================================================
+ AI Loan Eligibility Report
+============================================================
+
+Applicant Details
+
+Age : 28
+
+Salary : ₹55,000
+
+Experience : 5 Years
+
+Credit Score : 760
+
+Employment : Permanent
+
+------------------------------------------------------------
+
+Decision
+
+Approved
+
+------------------------------------------------------------
+
+Confidence
+
+95%
+
+------------------------------------------------------------
+
+Reasons
+
+• All eligibility criteria satisfied.
+
+------------------------------------------------------------
+
+Observation
+
+Current version uses Rule-Based AI.
+
+Future versions will replace only the
+Decision Engine using Machine Learning.
