@@ -1,0 +1,8 @@
+| Algorithm           | When to Use                                          | Advantages                             | Limitations                   | Explainable? | Interview Tip                           |
+| ------------------- | ---------------------------------------------------- | -------------------------------------- | ----------------------------- | ------------ | --------------------------------------- |
+| Decision Tree       | Simple classification/regression, explainable models | Easy to understand, no feature scaling | Can overfit                   | ✅ Yes        | Best first ML algorithm                 |
+| Linear Regression   | Predict continuous values                            | Simple, fast                           | Assumes linear relationship   | ✅ Yes        | Use for house prices, sales forecasting |
+| Logistic Regression | Binary classification                                | Fast, interpretable                    | Limited to linear boundaries  | ✅ Yes        | Great baseline classifier               |
+| Random Forest       | Higher accuracy than a single tree                   | Robust, handles complex patterns       | Less interpretable            | Partial      | Good production default                 |
+| SVM                 | High-dimensional classification                      | Powerful with kernels                  | Slower on large datasets      | ❌ Difficult  | Good for medium-sized datasets          |
+| Neural Network      | Complex patterns, images, text                       | Very powerful                          | Requires more data and tuning | ❌ No         | Foundation of Deep Learning             |
