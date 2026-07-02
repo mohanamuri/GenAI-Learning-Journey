@@ -1,0 +1,9 @@
+tensorflow==2.16.2
+numpy==1.26.4
+pandas
+scikit-learn
+matplotlib
+fastapi
+uvicorn
+streamlit
+joblib
