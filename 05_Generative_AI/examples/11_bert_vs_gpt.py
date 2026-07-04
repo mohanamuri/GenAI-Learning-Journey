@@ -1,3 +1,4 @@
+# Author: Mohan Raju Amuri
 """
 BERT vs GPT — Encoder vs Decoder
 ----------------------------------

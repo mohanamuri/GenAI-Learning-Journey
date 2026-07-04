@@ -1,3 +1,4 @@
+# Author: Mohan Raju Amuri
 """
 Temperature, Top-K, Top-P (Sampling Parameters)
 -------------------------------------------------

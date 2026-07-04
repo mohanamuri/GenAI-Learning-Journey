@@ -1,3 +1,4 @@
+# Author: Mohan Raju Amuri
 """
 Bag of Words (BoW)
 ------------------

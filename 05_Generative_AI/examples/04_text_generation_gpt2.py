@@ -1,3 +1,4 @@
+# Author: Mohan Raju Amuri
 """
 Text Generation with GPT-2
 ---------------------------

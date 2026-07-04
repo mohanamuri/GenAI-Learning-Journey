@@ -1,3 +1,4 @@
+# Author: Mohan Raju Amuri
 """
 ============================================================
 Example 03 : First Artificial Neuron
