@@ -1,12 +1,26 @@
 # Prerequisites — Module 04 NLP
 
+## No API Keys — Runs Locally
+
+All examples use NLTK, spaCy, scikit-learn, and sentence-transformers.
+No cloud services, no API keys. Models download once and cache locally.
+
+---
+
 ## Install
 
 ```bash
 pip install nltk spacy textblob gensim scikit-learn pandas sentence-transformers
 ```
 
-## One-time Downloads
+Verify:
+```bash
+python -c "import nltk, spacy, textblob, gensim, sklearn, sentence_transformers; print('All good')"
+```
+
+---
+
+## One-Time Downloads (Run Once)
 
 ```bash
 # NLTK data
@@ -24,44 +38,76 @@ nltk.download('vader_lexicon')
 python -m spacy download en_core_web_sm
 ```
 
-## What Each Example Needs
+Downloads are cached at `~/nltk_data` and `~/.local/lib/python3.x/site-packages/spacy/`.
+Never need to re-download unless you wipe those directories.
 
-| Example | Packages | Notes |
-|---------|----------|-------|
-| `01_text_cleaning.py` | `re`, `string` (stdlib) | No install needed |
-| `02_tokenization.py` | `nltk` | punkt_tab download |
-| `03_stopwords.py` | `nltk` | stopwords download |
-| `04_stemming.py` | `nltk` | No extra download |
-| `05_lemmatization.py` | `nltk` | wordnet + tagger download |
-| `06_pos_tagging.py` | `nltk` | tagger download |
-| `07_bag_of_words.py` | `scikit-learn`, `pandas` | — |
-| `08_tfidf.py` | `scikit-learn`, `pandas` | — |
-| `09_word2vec.py` | `gensim` | Trains on toy data locally |
-| `10_spacy_basics.py` | `spacy` | en_core_web_sm download |
-| `11_text_classification.py` | `scikit-learn` | — |
-| `12_sentiment_analysis.py` | `nltk`, `textblob` | vader_lexicon download |
-| `13_ner.py` | `spacy` | en_core_web_sm |
-| `14_topic_modeling.py` | `scikit-learn` | — |
-| `15_text_similarity.py` | `scikit-learn`, `sentence-transformers` | Downloads `all-MiniLM-L6-v2` (~80 MB) on first run |
+---
 
-## No API Keys Needed
+## What Each Example Does & How to Run
 
-Everything runs locally. `sentence-transformers` downloads `all-MiniLM-L6-v2` (~80 MB)
-on first run and caches it at `~/.cache/huggingface`.
+| Example | What it does | Needs | Run |
+|---------|-------------|-------|-----|
+| `01_text_cleaning.py` | Lowercase, strip HTML/URLs/punctuation | stdlib only | `python 01_text_cleaning.py` |
+| `02_tokenization.py` | Split text into words and sentences | nltk punkt | `python 02_tokenization.py` |
+| `03_stopwords.py` | Remove noise words — with sentiment trap warning | nltk stopwords | `python 03_stopwords.py` |
+| `04_stemming.py` | Crude root reduction: running → run | nltk | `python 04_stemming.py` |
+| `05_lemmatization.py` | Real-word root reduction with POS | nltk wordnet + tagger | `python 05_lemmatization.py` |
+| `06_pos_tagging.py` | Label each word as noun/verb/adjective | nltk tagger | `python 06_pos_tagging.py` |
+| `07_bag_of_words.py` | Word count vectors with CountVectorizer | scikit-learn, pandas | `python 07_bag_of_words.py` |
+| `08_tfidf.py` | Weighted word importance, keyword extraction | scikit-learn, pandas | `python 08_tfidf.py` |
+| `09_word2vec.py` | Train word vectors, king−man+woman≈queen | gensim | `python 09_word2vec.py` |
+| `10_spacy_basics.py` | Full NLP pipeline: tokens, POS, NER, deps | spacy en_core_web_sm | `python 10_spacy_basics.py` |
+| `11_text_classification.py` | Spam detection with TF-IDF + LogisticRegression | scikit-learn | `python 11_text_classification.py` |
+| `12_sentiment_analysis.py` | VADER + TextBlob sentiment scoring | nltk vader, textblob | `python 12_sentiment_analysis.py` |
+| `13_ner.py` | Named Entity Recognition — people, orgs, dates | spacy en_core_web_sm | `python 13_ner.py` |
+| `14_topic_modeling.py` | Discover hidden themes with LDA | scikit-learn | `python 14_topic_modeling.py` |
+| `15_text_similarity.py` | Jaccard, TF-IDF cosine, sentence embeddings | scikit-learn, sentence-transformers | `python 15_text_similarity.py` |
 
-## Sanity Check
-
-```bash
-python -c "import nltk, spacy, textblob, gensim, sklearn, sentence_transformers; print('All good')"
-```
+---
 
 ## Suggested Run Order
 
-Start here (no downloads):
+**Start here — no downloads needed:**
+```bash
+python 01_text_cleaning.py
+python 07_bag_of_words.py
+python 08_tfidf.py
+python 11_text_classification.py
+python 14_topic_modeling.py
 ```
-01 → 02 → 03 → 04 → 07 → 08 → 11
+
+**After NLTK downloads:**
+```bash
+python 02_tokenization.py
+python 03_stopwords.py
+python 04_stemming.py
+python 05_lemmatization.py
+python 06_pos_tagging.py
+python 12_sentiment_analysis.py
 ```
-Run after downloads complete:
+
+**After spaCy download:**
+```bash
+python 10_spacy_basics.py
+python 13_ner.py
 ```
-05 → 06 → 09 → 10 → 12 → 13 → 14 → 15
+
+**Downloads model on first run (~80 MB):**
+```bash
+python 09_word2vec.py       # trains on toy data locally — no download
+python 15_text_similarity.py  # downloads all-MiniLM-L6-v2 on first run
 ```
+
+---
+
+## Model Downloads (Automatic on First Run)
+
+| Example | Model | Size | Cached at |
+|---------|-------|------|-----------|
+| `15_text_similarity.py` | `all-MiniLM-L6-v2` | ~80 MB | `~/.cache/huggingface` |
+
+---
+
+## No API Keys — No Cost
+
+Everything runs locally. `sentence-transformers` model downloads once and is reused.
