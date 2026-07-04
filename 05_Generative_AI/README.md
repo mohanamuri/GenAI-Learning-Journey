@@ -4,22 +4,23 @@
 
 ---
 
-## What's in This Module
+## What We Built
 
-| File | Concept |
-|------|---------|
-| [01_tokenizers.py](examples/01_tokenizers.py) | Text → token IDs, tiktoken, token budget |
-| [02_huggingface_pipeline.py](examples/02_huggingface_pipeline.py) | Run any model in 2 lines |
-| [03_bert_embeddings.py](examples/03_bert_embeddings.py) | Contextual word vectors |
-| [04_text_generation_gpt2.py](examples/04_text_generation_gpt2.py) | Autoregressive generation, greedy vs sampling |
-| [05_temperature_topp_topk.py](examples/05_temperature_topp_topk.py) | Sampling knobs — creativity vs precision |
-| [06_prompt_engineering.py](examples/06_prompt_engineering.py) | Zero-shot, few-shot, CoT, format control |
-| [07_context_window.py](examples/07_context_window.py) | Token limits, sliding window, chunking |
-| [08_hallucinations.py](examples/08_hallucinations.py) | What they are, types, mitigation |
-| [09_structured_outputs.py](examples/09_structured_outputs.py) | JSON mode, Pydantic validation, retry |
-| [10_attention_mechanism.py](examples/10_attention_mechanism.py) | Q/K/V math, causal mask from scratch |
-| [11_bert_vs_gpt.py](examples/11_bert_vs_gpt.py) | Encoder vs decoder, when to use which |
-| [12_embeddings.py](examples/12_embeddings.py) | Semantic search, clustering, FAQ match |
+| # | File | What it demonstrates |
+|---|------|----------------------|
+| 01 | [01_tokenizers.py](examples/01_tokenizers.py) | Text → token IDs, tiktoken, token budget |
+| 02 | [02_huggingface_pipeline.py](examples/02_huggingface_pipeline.py) | Run any model in 2 lines |
+| 03 | [03_bert_embeddings.py](examples/03_bert_embeddings.py) | Contextual word vectors |
+| 04 | [04_text_generation_gpt2.py](examples/04_text_generation_gpt2.py) | Autoregressive generation, greedy vs sampling |
+| 05 | [05_temperature_topp_topk.py](examples/05_temperature_topp_topk.py) | Sampling knobs — creativity vs precision |
+| 06 | [06_prompt_engineering.py](examples/06_prompt_engineering.py) | Zero-shot, few-shot, CoT, format control |
+| 07 | [07_context_window.py](examples/07_context_window.py) | Token limits, sliding window, chunking |
+| 08 | [08_hallucinations.py](examples/08_hallucinations.py) | What they are, types, mitigation |
+| 09 | [09_structured_outputs.py](examples/09_structured_outputs.py) | JSON mode, Pydantic validation, retry |
+| 10 | [10_attention_mechanism.py](examples/10_attention_mechanism.py) | Q/K/V math, causal mask from scratch |
+| 11 | [11_bert_vs_gpt.py](examples/11_bert_vs_gpt.py) | Encoder vs decoder, when to use which |
+| 12 | [12_embeddings.py](examples/12_embeddings.py) | Semantic search, clustering, FAQ match |
+| — | [project/text_intelligence/](project/text_intelligence/) | Summarization + QA + zero-shot classification pipeline |
 
 ---
 

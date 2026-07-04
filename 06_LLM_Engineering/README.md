@@ -4,21 +4,22 @@
 
 ---
 
-## What's in This Module
+## What We Built
 
-| File | Concept |
-|------|---------|
-| [01_openai_basics.py](examples/01_openai_basics.py) | Chat completions, token usage, model selection |
-| [02_anthropic_basics.py](examples/02_anthropic_basics.py) | Claude API, key differences from OpenAI |
-| [03_system_prompts.py](examples/03_system_prompts.py) | Role, tone, constraints, injection defense |
-| [04_prompt_templates.py](examples/04_prompt_templates.py) | Reusable, validated, versionable prompts |
-| [05_streaming.py](examples/05_streaming.py) | Token-by-token output, when to stream |
-| [06_json_mode.py](examples/06_json_mode.py) | Structured output, Pydantic validation |
-| [07_function_calling.py](examples/07_function_calling.py) | Tool use — LLM picks + params, you execute |
-| [08_chat_history.py](examples/08_chat_history.py) | Stateless API, sliding window, session storage |
-| [09_cost_optimization.py](examples/09_cost_optimization.py) | Model selection, prompt compression, caching |
-| [10_error_handling.py](examples/10_error_handling.py) | Retry strategy, fallback chain, error taxonomy |
-| [11_ollama_local_llm.py](examples/11_ollama_local_llm.py) | Local LLMs, cloud↔local swap pattern |
+| # | File | What it demonstrates |
+|---|------|----------------------|
+| 01 | [01_openai_basics.py](examples/01_openai_basics.py) | Chat completions, token usage, model selection |
+| 02 | [02_anthropic_basics.py](examples/02_anthropic_basics.py) | Claude API, key differences from OpenAI |
+| 03 | [03_system_prompts.py](examples/03_system_prompts.py) | Role, tone, constraints, injection defense |
+| 04 | [04_prompt_templates.py](examples/04_prompt_templates.py) | Reusable, validated, versionable prompts |
+| 05 | [05_streaming.py](examples/05_streaming.py) | Token-by-token output, when to stream |
+| 06 | [06_json_mode.py](examples/06_json_mode.py) | Structured output, Pydantic validation |
+| 07 | [07_function_calling.py](examples/07_function_calling.py) | Tool use — LLM picks + params, you execute |
+| 08 | [08_chat_history.py](examples/08_chat_history.py) | Stateless API, sliding window, session storage |
+| 09 | [09_cost_optimization.py](examples/09_cost_optimization.py) | Model selection, prompt compression, caching |
+| 10 | [10_error_handling.py](examples/10_error_handling.py) | Retry strategy, fallback chain, error taxonomy |
+| 11 | [11_ollama_local_llm.py](examples/11_ollama_local_llm.py) | Local LLMs, cloud↔local swap pattern |
+| — | [project/smart_chatbot/](project/smart_chatbot/) | CLI chatbot with history, streaming, cost tracking |
 
 ---
 

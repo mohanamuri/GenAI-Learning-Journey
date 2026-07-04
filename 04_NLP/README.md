@@ -4,25 +4,26 @@
 
 ---
 
-## What's in This Module
+## What We Built
 
-| File | Concept |
-|------|---------|
-| [01_text_cleaning.py](examples/01_text_cleaning.py) | Lowercase, remove HTML/URLs/punctuation |
-| [02_tokenization.py](examples/02_tokenization.py) | Word & sentence splitting |
-| [03_stopwords.py](examples/03_stopwords.py) | Remove noise words (carefully) |
-| [04_stemming.py](examples/04_stemming.py) | Crude root reduction (fast) |
-| [05_lemmatization.py](examples/05_lemmatization.py) | Real-word root reduction (accurate) |
-| [06_pos_tagging.py](examples/06_pos_tagging.py) | Grammar labels per word |
-| [07_bag_of_words.py](examples/07_bag_of_words.py) | Word count vectors |
-| [08_tfidf.py](examples/08_tfidf.py) | Weighted word importance |
-| [09_word2vec.py](examples/09_word2vec.py) | Word as vector in semantic space |
-| [10_spacy_basics.py](examples/10_spacy_basics.py) | Full NLP pipeline, fast |
-| [11_text_classification.py](examples/11_text_classification.py) | Label text (spam/ham, topic) |
-| [12_sentiment_analysis.py](examples/12_sentiment_analysis.py) | Positive / negative / neutral |
-| [13_ner.py](examples/13_ner.py) | Find people, orgs, dates in text |
-| [14_topic_modeling.py](examples/14_topic_modeling.py) | Discover themes without labels |
-| [15_text_similarity.py](examples/15_text_similarity.py) | Measure how alike two texts are |
+| # | File | What it demonstrates |
+|---|------|----------------------|
+| 01 | [01_text_cleaning.py](examples/01_text_cleaning.py) | Lowercase, remove HTML/URLs/punctuation |
+| 02 | [02_tokenization.py](examples/02_tokenization.py) | Word & sentence splitting |
+| 03 | [03_stopwords.py](examples/03_stopwords.py) | Remove noise words (carefully) |
+| 04 | [04_stemming.py](examples/04_stemming.py) | Crude root reduction (fast) |
+| 05 | [05_lemmatization.py](examples/05_lemmatization.py) | Real-word root reduction (accurate) |
+| 06 | [06_pos_tagging.py](examples/06_pos_tagging.py) | Grammar labels per word |
+| 07 | [07_bag_of_words.py](examples/07_bag_of_words.py) | Word count vectors |
+| 08 | [08_tfidf.py](examples/08_tfidf.py) | Weighted word importance |
+| 09 | [09_word2vec.py](examples/09_word2vec.py) | Word as vector in semantic space |
+| 10 | [10_spacy_basics.py](examples/10_spacy_basics.py) | Full NLP pipeline, fast |
+| 11 | [11_text_classification.py](examples/11_text_classification.py) | Label text (spam/ham, topic) |
+| 12 | [12_sentiment_analysis.py](examples/12_sentiment_analysis.py) | Positive / negative / neutral |
+| 13 | [13_ner.py](examples/13_ner.py) | Find people, orgs, dates in text |
+| 14 | [14_topic_modeling.py](examples/14_topic_modeling.py) | Discover themes without labels |
+| 15 | [15_text_similarity.py](examples/15_text_similarity.py) | Measure how alike two texts are |
+| — | [project/sentiment_analyzer/](project/sentiment_analyzer/) | End-to-end multi-source sentiment analysis |
 
 ---
 
