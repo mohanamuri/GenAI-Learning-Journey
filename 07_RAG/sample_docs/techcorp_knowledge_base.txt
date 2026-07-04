@@ -1,0 +1,78 @@
+This file is used as sample data by RAG examples.
+It represents a company knowledge base document.
+
+TECHCORP AI PLATFORM — KNOWLEDGE BASE
+======================================
+
+PRODUCT OVERVIEW
+----------------
+TechCorp AI Platform is a cloud-native machine learning platform that enables
+data scientists and engineers to build, train, and deploy AI models at scale.
+The platform supports Python and R workflows and integrates with popular
+frameworks including TensorFlow, PyTorch, and scikit-learn.
+
+PRICING
+--------
+Starter Plan: $99/month — up to 5 users, 100 GB storage, CPU-only training
+Professional Plan: $499/month — up to 25 users, 1 TB storage, GPU training
+Enterprise Plan: custom pricing — unlimited users, dedicated infrastructure
+
+SUPPORTED MODELS
+----------------
+The platform natively supports the following model types:
+- Tabular: XGBoost, LightGBM, Random Forest, Logistic Regression
+- Computer Vision: ResNet, EfficientNet, YOLO
+- NLP: BERT, GPT-2, T5, custom transformer architectures
+- Time Series: ARIMA, Prophet, LSTM
+
+DEPLOYMENT OPTIONS
+------------------
+Models can be deployed as:
+1. REST API endpoint (auto-scaling, pay-per-request)
+2. Batch inference pipeline (scheduled or triggered)
+3. Edge deployment (ONNX export for edge devices)
+4. Streaming inference (Kafka integration)
+
+SECURITY
+--------
+- SOC 2 Type II certified
+- Data encrypted at rest (AES-256) and in transit (TLS 1.3)
+- Role-based access control (RBAC) with SSO support
+- Audit logs retained for 90 days
+
+SLA
+---
+The platform guarantees 99.9% uptime for Professional and Enterprise plans.
+Starter plan SLA is 99.5%. Downtime credits are issued automatically.
+
+SUPPORT
+-------
+- Starter: community forum + email (48h response)
+- Professional: email + Slack (8h response), dedicated CSM
+- Enterprise: 24/7 phone + Slack, dedicated support engineer
+
+GETTING STARTED
+---------------
+1. Sign up at platform.techcorp.ai
+2. Create a project and upload your dataset
+3. Choose a model template or start from scratch
+4. Train using the drag-and-drop UI or Python SDK
+5. Deploy with one click and get your API endpoint
+
+PYTHON SDK QUICK START
+-----------------------
+    import techcorp
+    client = techcorp.Client(api_key="your-key")
+    model = client.models.load("my-model-v1")
+    prediction = model.predict({"feature1": 1.5, "feature2": "value"})
+
+FAQ
+---
+Q: Can I use my own GPU?
+A: Yes, bring-your-own-compute is supported on Enterprise plan.
+
+Q: Is there a free trial?
+A: Yes, 14-day free trial with full Professional features, no credit card required.
+
+Q: What data formats are supported?
+A: CSV, Parquet, JSON, images (JPEG/PNG), and custom formats via SDK connectors.
