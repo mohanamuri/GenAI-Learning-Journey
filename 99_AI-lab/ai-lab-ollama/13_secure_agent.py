@@ -13,17 +13,14 @@ KEY: Input validation, authorization, audit logging
 import re
 import json
 from datetime import datetime
-from anthropic import Anthropic
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
+from ollama_base import OllamaClient
 
 
 class SecureAgent:
-    """Agent with security controls"""
+    """Agent with security controls (Ollama)"""
 
     def __init__(self, allowed_topics: list = None):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
         self.conversation_history = []
         self.audit_log = []
         self.allowed_topics = allowed_topics or [
@@ -109,13 +106,12 @@ class SecureAgent:
         })
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=500,
-                messages=self.conversation_history
+            response = self.client.chat(
+                messages=self.conversation_history,
+                max_tokens=500
             )
 
-            agent_response = response.content[0].text
+            agent_response = response
 
             # Step 5: Filter output
             filtered_response = self._filter_output(agent_response)

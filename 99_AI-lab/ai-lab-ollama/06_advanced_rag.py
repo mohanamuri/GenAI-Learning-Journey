@@ -10,31 +10,27 @@ MUST REMEMBER:
 KEY: Query expansion, LLM reranking, metadata filtering
 """
 
-from anthropic import Anthropic
+from ollama_base import OllamaClient
 import json
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
 
 
 class QueryExpander:
     """Expand queries with LLM"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
 
     def expand_query(self, query: str):
         """Generate alternative phrasings"""
         prompt = f'Generate 3 alternative phrasings of: "{query}". Return ONLY queries, one per line.'
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=200,
-                messages=[{"role": "user", "content": prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=200
             )
 
-            alternatives = response.content[0].text.strip().split("\n")
+            alternatives = response.strip().split("\n")
             return [query] + [q.strip() for q in alternatives if q.strip()]
 
         except Exception as e:
@@ -66,8 +62,7 @@ class LLMReranker:
     """Rerank documents using LLM"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
 
     def rerank(self, query: str, documents, top_k: int = 3):
         """LLM-based reranking"""
@@ -85,13 +80,12 @@ class LLMReranker:
         prompt = f'Query: "{query}"\n\nRank by relevance (return JSON array of indices): {doc_text}'
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=100,
-                messages=[{"role": "user", "content": prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=100
             )
 
-            text = response.content[0].text
+            text = response
             start = text.find("[")
             end = text.rfind("]") + 1
             ranking = json.loads(text[start:end])

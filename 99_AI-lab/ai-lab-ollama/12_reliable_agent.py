@@ -11,17 +11,14 @@ KEY: Error handling, retries, fallbacks, circuit breaker
 """
 
 import time
-from anthropic import Anthropic, RateLimitError
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
+from ollama_base import OllamaClient
 
 
 class ReliableAgent:
-    """Agent with error handling and recovery"""
+    """Agent with error handling and recovery (Ollama)"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
         self.max_retries = 3
         self.conversation_history = []
         self.error_log = []
@@ -34,18 +31,12 @@ class ReliableAgent:
             try:
                 print(f"🔄 Attempt {attempt + 1}/{max_retries}")
 
-                response = self.client.messages.create(
-                    model=self.model,
-                    max_tokens=500,
-                    messages=messages
+                response = self.client.chat(
+                    messages=messages,
+                    max_tokens=500
                 )
 
-                return response.content[0].text
-
-            except RateLimitError:
-                print(f"⚠️ Rate limited. Waiting {backoff}s...")
-                time.sleep(backoff)
-                backoff *= 2
+                return response
 
             except Exception as e:
                 print(f"❌ Error: {e}")

@@ -1,28 +1,25 @@
 """
-03_llm_production_wrapper.py - Production Wrapper with Retry + Rate Limiting
-=============================================================================
+03_llm_production_wrapper.py - Production Wrapper with Retry + Caching (Ollama)
+==============================================================================
 MUST REMEMBER:
-✓ Exponential backoff: wait 1s, 2s, 4s...
-✓ Rate limits: respect API headers
+✓ Retry logic: handle connection failures
 ✓ Caching: hash prompt to create key
 ✓ Logging: record all requests
+✓ Graceful degradation for local models
 
-KEY: Retry logic, rate limiting, caching, logging
+KEY: Retry logic, caching, logging (adapted for local Ollama)
 """
 
-from anthropic import Anthropic, RateLimitError
+from ollama_base import OllamaClient
 import time
 import hashlib
 
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
-
-
 class ProductionLLM:
-    """Production-grade LLM wrapper"""
+    """Production-grade LLM wrapper for Ollama"""
 
-    def __init__(self, max_retries=3, initial_backoff=1.0):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+    def __init__(self, model: str = "mistral", max_retries=3, initial_backoff=1.0):
+        self.client = OllamaClient(model=model)
+        self.model = model
         self.max_retries = max_retries
         self.initial_backoff = initial_backoff
         self.cache = {}
@@ -50,13 +47,12 @@ class ProductionLLM:
             try:
                 print(f"🔄 Attempt {attempt + 1}/{self.max_retries}")
 
-                response = self.client.messages.create(
-                    model=self.model,
-                    max_tokens=1024,
-                    messages=[{"role": "user", "content": prompt}]
+                response = self.client.chat(
+                    messages=[{"role": "user", "content": prompt}],
+                    max_tokens=1024
                 )
 
-                result = response.content[0].text
+                result = response
 
                 # MUST REMEMBER: Cache successful response
                 self.cache[cache_key] = result
@@ -64,9 +60,9 @@ class ProductionLLM:
 
                 return result
 
-            except RateLimitError as e:
+            except ConnectionError as e:
                 last_error = e
-                print(f"⚠️ Rate limited. Waiting {backoff}s...")
+                print(f"⚠️  Connection error. Waiting {backoff}s...")
                 time.sleep(backoff)
                 backoff *= 2
 
@@ -86,7 +82,7 @@ class ProductionLLM:
 
 def main():
     print("=" * 60)
-    print("03: PRODUCTION LLM WRAPPER")
+    print("03: PRODUCTION LLM WRAPPER (Ollama)")
     print("=" * 60)
 
     llm = ProductionLLM(max_retries=3)
@@ -96,7 +92,7 @@ def main():
     print("-" * 40)
     prompt = "What is machine learning?"
 
-    print("\n🔹 First call (API):")
+    print("\n🔹 First call (Ollama):")
     response1 = llm.call_with_retry(prompt)
     print(f"Response: {response1[:80]}...")
 
@@ -126,11 +122,11 @@ def main():
     print("✅ MUST REMEMBER:")
     print("=" * 60)
     print("""
-1. RETRY: Exponential backoff (1s, 2s, 4s...)
-2. RATE LIMIT: Respect API headers, wait appropriately
-3. CACHE: Hash prompt to create key, set TTL
-4. LOGGING: Record all requests for debugging
-5. PRODUCTION: Add error alerts and monitoring
+1. RETRY: Exponential backoff (1s, 2s, 4s...) for connection errors
+2. LOCAL: No rate limiting with local Ollama (unlike cloud APIs)
+3. CACHE: Hash prompt to create key, saves Ollama processing time
+4. LOGGING: Record all requests for debugging and monitoring
+5. PRODUCTION: Add error alerts and monitoring for production use
     """)
 
 

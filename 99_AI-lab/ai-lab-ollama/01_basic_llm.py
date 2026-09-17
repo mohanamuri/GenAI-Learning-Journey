@@ -1,52 +1,44 @@
 """
-01_basic_llm.py - Basic LLM Application
-========================================
+01_basic_llm.py - Basic LLM Application (OLLAMA - Local & FREE)
+===============================================================
 
 🎯 HOW TO USE THIS FILE:
 ========================
-For CLAUDE.ai Testing (Manual):
-1. Copy the example code from main() function
-2. Go to Claude.ai (https://claude.ai)
-3. Paste the code and explain what you want to do
-4. Claude will help you understand and test it
-
-OR: Run locally with Anthropic API key:
-1. Get API key from: https://console.anthropic.com/account/keys
-2. Replace API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
-3. Run: python 01_basic_llm.py
+Run locally with Ollama:
+1. Start Ollama server: ollama serve
+2. Keep that terminal open
+3. In new terminal: python 01_basic_llm.py
 
 WHAT YOU'LL LEARN:
-- How to call Claude API
+- How to call local LLM via Ollama API
 - Basic prompt engineering
 - Handling responses
 - Error handling basics
+- Multi-turn conversation with history
 
 MUST REMEMBER:
-✓ API Key is hardcoded (replace with your key)
+✓ No API key needed (runs locally)
 ✓ Messages have a specific format: role + content
-✓ Always handle rate limits and API errors
+✓ Always handle Ollama connection errors
 ✓ Keep prompts clear and specific
-✗ DON'T: Commit API keys to git, hardcode in production
+✓ Make sure ollama serve is running
 
 KEY CONCEPTS:
-- Client initialization
+- Client initialization (no auth needed)
 - Message format (role: "user" or "assistant")
 - Temperature: controls randomness (0=deterministic, 1=creative)
 - Max tokens: limits response length
 """
 
-from anthropic import Anthropic
-
-# MUST REMEMBER: Replace with your actual API key from https://console.anthropic.com/account/keys
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"  # <- REPLACE THIS WITH YOUR KEY
+from ollama_base import OllamaClient
 
 
 class BasicLLMApp:
-    """Simple LLM chatbot wrapper"""
+    """Simple LLM chatbot wrapper for Ollama"""
 
-    def __init__(self, model: str = "claude-3-5-sonnet-20241022"):
-        """Initialize the LLM client"""
-        self.client = Anthropic(api_key=API_KEY)
+    def __init__(self, model: str = "mistral"):
+        """Initialize the LLM client (runs locally via Ollama)"""
+        self.client = OllamaClient(model=model)
         self.model = model
         self.conversation_history = []
 
@@ -65,14 +57,13 @@ class BasicLLMApp:
         })
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=1024,
+            response = self.client.chat(
+                messages=self.conversation_history,
                 temperature=temperature,
-                messages=self.conversation_history
+                max_tokens=1024
             )
 
-            assistant_message = response.content[0].text
+            assistant_message = response
 
             # MUST REMEMBER: Add assistant response for multi-turn
             self.conversation_history.append({
@@ -82,8 +73,12 @@ class BasicLLMApp:
 
             return assistant_message
 
+        except ConnectionError as e:
+            print(f"❌ Ollama Connection Error: {e}")
+            self.conversation_history.pop()
+            raise
         except Exception as e:
-            print(f"❌ API Error: {e}")
+            print(f"❌ Error: {e}")
             self.conversation_history.pop()
             raise
 

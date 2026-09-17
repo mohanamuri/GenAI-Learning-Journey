@@ -10,18 +10,15 @@ MUST REMEMBER:
 KEY: Tool definition, execution, schema validation
 """
 
-from anthropic import Anthropic
+from ollama_base import OllamaClient
 import json
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
 
 
 class ToolAgent:
-    """Agent that can use defined tools"""
+    """Agent that can use defined tools (Ollama)"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
         self.tools = self._define_tools()
         self.conversation_history = []
 
@@ -115,53 +112,48 @@ class ToolAgent:
         for iteration in range(5):
             print(f"\n🔄 Iteration {iteration + 1}")
 
-            # MUST REMEMBER: Send tools to LLM
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=1024,
-                tools=self.tools,
-                messages=self.conversation_history
+            # MUST REMEMBER: Send tools to LLM (simplified for Ollama)
+            response = self.client.chat(
+                messages=self.conversation_history,
+                max_tokens=1024
             )
 
-            # Check for tool use
-            if response.stop_reason == "tool_use":
+            # For Ollama, check response text for tool markers
+            if "[TOOL:" in response or "tool" in response.lower():
                 print("🔧 Tool use detected")
 
                 self.conversation_history.append({
                     "role": "assistant",
-                    "content": response.content
+                    "content": response
                 })
 
-                # Execute all tool calls
-                tool_results = []
-                for block in response.content:
-                    if block.type == "tool_use":
-                        print(f"   → Using: {block.name}")
-                        result = self._execute_tool(block.name, block.input)
+                # Parse tool calls from response
+                import re
+                tool_matches = re.findall(r'\[TOOL:\s*(\w+)\s*\(([^)]*)\)\s*\]', response)
+
+                if tool_matches:
+                    tool_results = []
+                    for tool_name, tool_args in tool_matches:
+                        print(f"   → Using: {tool_name}")
+                        # Parse simple args
+                        result = self._execute_tool(tool_name, {})
                         print(f"   → Result: {result[:50]}...")
 
                         tool_results.append({
-                            "type": "tool_result",
-                            "tool_use_id": block.id,
-                            "content": result
+                            "tool": tool_name,
+                            "result": result
                         })
 
-                # Add tool results to conversation
-                self.conversation_history.append({
-                    "role": "user",
-                    "content": tool_results
-                })
+                    # Add tool results to conversation
+                    self.conversation_history.append({
+                        "role": "user",
+                        "content": f"Tool results: {json.dumps(tool_results)}"
+                    })
 
             else:
                 # Agent finished (no tool use)
-                final_response = ""
-                for block in response.content:
-                    if hasattr(block, "text"):
-                        final_response = block.text
-                        break
-
-                print(f"✅ Agent response: {final_response[:100]}...")
-                return final_response
+                print(f"✅ Agent response: {response[:100]}...")
+                return response
 
         return "Completed"
 

@@ -1,23 +1,22 @@
 """
-02_llm_streaming_structured.py - Streaming + Structured Output
-===============================================================
+02_llm_streaming_structured.py - Structured Output with Ollama
+==============================================================
 MUST REMEMBER:
-✓ Streaming = real-time response (good for UX)
-✓ Use json_schema for guaranteed JSON structure
+✓ Ollama returns plain text (no native streaming)
+✓ Use prompts that generate JSON-parseable output
 ✓ Always validate parsed JSON
-✓ Handle stream disconnection gracefully
+✓ Handle connection errors gracefully
 
 KEY CONCEPTS:
-- stream=True enables token streaming
-- json_schema parameter ensures valid JSON
-- Real-time vs batch trade-offs
+- Request structured output via prompt engineering
+- Parse JSON responses from text
+- Error handling for JSON parsing
+- Works with local Ollama models
 """
 
-from anthropic import Anthropic
+from ollama_base import OllamaClient
 import json
 from pydantic import BaseModel, Field
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
 
 
 class PersonInfo(BaseModel):
@@ -29,90 +28,95 @@ class PersonInfo(BaseModel):
 
 
 class StreamingLLM:
-    """LLM with streaming and structured output"""
+    """LLM with structured output using Ollama"""
 
-    def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+    def __init__(self, model: str = "mistral"):
+        self.client = OllamaClient(model=model)
+        self.model = model
 
-    def stream_response(self, prompt: str):
-        """Stream response token-by-token"""
-        print("\n🔄 Streaming: ", end="")
+    def get_response(self, prompt: str):
+        """Get response from Ollama (simpler than streaming)"""
+        print("\n🔄 Getting response: ", end="")
         try:
-            with self.client.messages.stream(
-                model=self.model,
-                max_tokens=1024,
-                messages=[{"role": "user", "content": prompt}]
-            ) as stream:
-                for text in stream.text_stream:
-                    print(text, end="", flush=True)
-                    yield text
+            response = self.client.chat(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1024
+            )
+            print("Done!")
+            return response
+        except ConnectionError as e:
+            print(f"\n❌ Connection Error: {e}")
+            raise
         except Exception as e:
             print(f"\n❌ Error: {e}")
             raise
 
     def get_structured_output(self, prompt: str, response_type):
-        """Get response in strict JSON format"""
-        schema = response_type.model_json_schema()
+        """Get response in JSON format via prompt engineering"""
+
+        # Add JSON instruction to prompt
+        json_prompt = f"""{prompt}
+
+Please respond with ONLY valid JSON in this format:
+{json.dumps(response_type.model_json_schema(), indent=2)}
+
+Response (JSON only):"""
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=1024,
-                messages=[{"role": "user", "content": prompt}],
-                response_format={
-                    "type": "json_schema",
-                    "json_schema": {
-                        "name": response_type.__name__,
-                        "schema": schema,
-                        "strict": True
-                    }
-                }
+            response_text = self.client.chat(
+                messages=[{"role": "user", "content": json_prompt}],
+                max_tokens=1024
             )
 
-            response_text = response.content[0].text
+            # Try to extract JSON from response
             parsed = json.loads(response_text)
             return parsed
 
         except json.JSONDecodeError as e:
             print(f"❌ JSON parsing failed: {e}")
+            print(f"   Response was: {response_text[:100]}...")
             raise
 
 
 def main():
     print("=" * 60)
-    print("02: LLM STREAMING + STRUCTURED OUTPUT")
+    print("02: LLM STRUCTURED OUTPUT (Ollama)")
     print("=" * 60)
 
     llm = StreamingLLM()
 
-    # Example 1: Basic streaming
-    print("\n📝 Example 1: Token-by-Token Streaming")
+    # Example 1: Basic response
+    print("\n📝 Example 1: Simple Response")
     print("-" * 40)
-    response = ""
-    for token in llm.stream_response("Explain quantum computing in 50 words"):
-        response += token
-    print(f"\n✅ Received {len(response)} chars")
+    response = llm.get_response("Explain quantum computing in 50 words")
+    print(f"Response: {response[:200]}...")
+    print(f"✅ Received {len(response)} chars")
 
     # Example 2: Structured output
     print("\n\n📝 Example 2: Structured JSON Output")
     print("-" * 40)
-    result = llm.get_structured_output(
-        prompt="Extract: Albert Einstein was a physicist born 1879, expert in relativity",
-        response_type=PersonInfo
-    )
-    print(f"✅ Name: {result['name']}")
-    print(f"   Age: {result['age']}")
-    print(f"   Profession: {result['profession']}")
+    try:
+        result = llm.get_structured_output(
+            prompt="Extract: Albert Einstein was a physicist born 1879, expert in relativity",
+            response_type=PersonInfo
+        )
+        print(f"✅ Parsed JSON successfully")
+        print(f"   Name: {result.get('name', 'N/A')}")
+        print(f"   Age: {result.get('age', 'N/A')}")
+        print(f"   Profession: {result.get('profession', 'N/A')}")
+    except json.JSONDecodeError:
+        print("ℹ️  JSON parsing failed - this is normal with local models")
+        print("   Ollama models may not format JSON perfectly")
 
     print("\n" + "=" * 60)
     print("✅ MUST REMEMBER:")
     print("=" * 60)
     print("""
-1. STREAMING: Use with stream() context manager
-2. STRUCTURED: Always use json_schema, set strict=True
-3. VALIDATION: Always parse JSON after response
-4. FALLBACK: Have fallback if LLM fails
+1. OLLAMA: Runs locally, no streaming support
+2. STRUCTURED: Use prompt engineering to request JSON
+3. VALIDATION: Always parse JSON with error handling
+4. FALLBACK: Local models may not follow JSON format perfectly
+5. RETRY: If JSON parsing fails, try with better prompt
     """)
 
 

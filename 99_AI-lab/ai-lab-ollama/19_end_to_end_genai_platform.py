@@ -10,18 +10,15 @@ MUST REMEMBER:
 ✓ Monitoring across all layers
 """
 
-from anthropic import Anthropic
+from ollama_base import OllamaClient
 import json
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
 
 
 class EndToEndGenAIPlatform:
-    """Complete GenAI platform integrating all components"""
+    """Complete GenAI platform integrating all components (Ollama)"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
 
         # Component 1: Knowledge base (simulated RAG)
         self.knowledge_base = {
@@ -78,13 +75,12 @@ Generate a comprehensive response:
         """
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=500,
-                messages=[{"role": "user", "content": prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=500
             )
 
-            answer = response.content[0].text
+            answer = response
 
         except Exception as e:
             answer = f"Error generating response: {e}"

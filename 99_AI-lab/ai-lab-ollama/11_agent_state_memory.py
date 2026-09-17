@@ -10,11 +10,9 @@ MUST REMEMBER:
 KEY: State persistence, memory management, context windows
 """
 
-from anthropic import Anthropic
+from ollama_base import OllamaClient
 import json
 from datetime import datetime
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
 
 
 class AgentMemory:
@@ -55,12 +53,11 @@ class AgentMemory:
 
 
 class StatefulAgent:
-    """Agent with state and memory management"""
+    """Agent with state and memory management (Ollama)"""
 
     def __init__(self, name: str):
         self.name = name
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
         self.memory = AgentMemory()
         self.conversation_history = []
         self.state = {}  # Current session state
@@ -105,13 +102,12 @@ class StatefulAgent:
         })
 
         # Get response
-        response = self.client.messages.create(
-            model=self.model,
-            max_tokens=500,
-            messages=self.conversation_history
+        response = self.client.chat(
+            messages=self.conversation_history,
+            max_tokens=500
         )
 
-        agent_response = response.content[0].text
+        agent_response = response
 
         # MUST REMEMBER: Store for memory
         self.conversation_history.append({

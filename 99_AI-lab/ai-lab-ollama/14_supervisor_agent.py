@@ -10,42 +10,38 @@ MUST REMEMBER:
 KEY: Coordinator pattern, task delegation, result aggregation
 """
 
-from anthropic import Anthropic
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
+from ollama_base import OllamaClient
+import json
 
 
 class SpecialistAgent:
-    """Specialist agent for specific domain"""
+    """Specialist agent for specific domain (Ollama)"""
 
     def __init__(self, specialty: str, description: str):
         self.specialty = specialty
         self.description = description
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
 
     def process(self, task: str) -> str:
         """Process task in specialty"""
         prompt = f"You are a {self.specialty} specialist. {self.description}\n\nTask: {task}"
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=500,
-                messages=[{"role": "user", "content": prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=500
             )
-            return response.content[0].text
+            return response
 
         except Exception as e:
             return f"Error: {e}"
 
 
 class SupervisorAgent:
-    """Supervisor that coordinates specialist agents"""
+    """Supervisor that coordinates specialist agents (Ollama)"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
 
         # MUST REMEMBER: Create specialist agents
         self.specialists = {
@@ -94,13 +90,12 @@ Return simple list of needed specialists.
         """
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=300,
-                messages=[{"role": "user", "content": delegation_prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": delegation_prompt}],
+                max_tokens=300
             )
 
-            delegation_plan = response.content[0].text
+            delegation_plan = response
             specialists_needed = self._parse_delegation(delegation_plan)
 
             print(f"📍 Specialists needed: {list(specialists_needed.keys())}")
@@ -132,13 +127,12 @@ Provide final synthesized response.
         """
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=500,
-                messages=[{"role": "user", "content": aggregation_prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": aggregation_prompt}],
+                max_tokens=500
             )
 
-            final_response = response.content[0].text
+            final_response = response
             print(f"✅ Final Response: {final_response[:100]}...")
             return final_response
 
@@ -147,61 +141,6 @@ Provide final synthesized response.
 
 
 def main():
-    print("=" * 60)
-    print("14: SUPERVISOR AGENT (Multi-Agent Orchestration)")
-    print("=" * 60)
-
-    supervisor = SupervisorAgent()
-
-    # Example 1: Complex task requiring multiple specialists
-    print("\n📝 Example 1: Complex Task")
-    print("-" * 40)
-    task = "How should we build an ML system for customer churn prediction?"
-    result = supervisor.supervise(task)
-
-    # Example 2: Another task
-    print("\n📝 Example 2: Another Task")
-    print("-" * 40)
-    supervisor2 = SupervisorAgent()
-    task2 = "Design a data pipeline for real-time analytics"
-    result2 = supervisor2.supervise(task2)
-
-    print("\n" + "=" * 60)
-    print("✅ MUST REMEMBER:")
-    print("=" * 60)
-    print("""
-1. SUPERVISOR PATTERN:
-   - Analyze task
-   - Delegate to specialists
-   - Aggregate results
-   - Provide final answer
-
-2. SPECIALIST AGENTS:
-   - Deep expertise in domain
-   - Focused responsibilities
-   - Consistent interface
-   - Clear success criteria
-
-3. DELEGATION:
-   - Analyze task requirements
-   - Match to specialist strengths
-   - Provide context
-   - Handle failures
-
-4. AGGREGATION:
-   - Synthesize responses
-   - Resolve conflicts
-   - Ensure coherence
-   - Add final insights
-
-5. SCALABILITY:
-   - Add more specialists
-   - Dynamic delegation
-   - Load balancing
-   - Async execution
-    """)
-
-    import json
 
 
 if __name__ == "__main__":

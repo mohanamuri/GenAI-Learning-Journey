@@ -10,17 +10,14 @@ MUST REMEMBER:
 KEY: Agentic loop, state management, action execution
 """
 
-from anthropic import Anthropic
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
+from ollama_base import OllamaClient
 
 
 class BasicAgent:
-    """Simple agent with ReAct pattern: Reason, Act, Observe"""
+    """Simple agent with ReAct pattern: Reason, Act, Observe (Ollama)"""
 
     def __init__(self):
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
         self.conversation_history = []
         self.action_count = 0
         self.max_iterations = 5
@@ -46,13 +43,12 @@ class BasicAgent:
             print(f"\n🔄 Iteration {iteration + 1}/{self.max_iterations}")
 
             # MUST REMEMBER: Agent thinks
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=500,
-                messages=self.conversation_history
+            response = self.client.chat(
+                messages=self.conversation_history,
+                max_tokens=500
             )
 
-            agent_response = response.content[0].text
+            agent_response = response
             print(f"💭 Agent: {agent_response[:200]}...")
 
             self.conversation_history.append({

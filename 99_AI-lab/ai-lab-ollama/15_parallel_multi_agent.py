@@ -11,31 +11,27 @@ KEY: Async execution, concurrency, load balancing
 """
 
 import asyncio
-from anthropic import Anthropic
-
-API_KEY = "sk-ant-v4-YOUR-API-KEY-HERE"
+from ollama_base import OllamaClient
 
 
 class ParallelAgent:
-    """Individual agent for parallel execution"""
+    """Individual agent for parallel execution (Ollama)"""
 
     def __init__(self, agent_id: str, specialty: str):
         self.agent_id = agent_id
         self.specialty = specialty
-        self.client = Anthropic(api_key=API_KEY)
-        self.model = "claude-3-5-sonnet-20241022"
+        self.client = OllamaClient(model="mistral")
 
     def execute(self, task: str) -> str:
         """Execute task"""
         prompt = f"As a {self.specialty} agent, {task}"
 
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=300,
-                messages=[{"role": "user", "content": prompt}]
+            response = self.client.chat(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=300
             )
-            return response.content[0].text
+            return response
 
         except Exception as e:
             return f"Error: {e}"
